@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conectando Talentos — Currículos Acessíveis</title>
+  <meta name="description" content="Plataforma gratuita de criação de currículos para pessoas com deficiência. Inclusão digital e oportunidades reais." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- BARRA DE ACESSIBILIDADE -->
+  <div class="barra-acessibilidade" role="toolbar" aria-label="Ferramentas de acessibilidade">
+    <button onclick="alterarFonte(1)" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+    <button onclick="alterarFonte(-1)" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+    <button onclick="alternarContraste()" aria-label="Alternar alto contraste" title="Alto contraste" id="btn-contraste">◐ Contraste</button>
+    <button onclick="alternarLibras()" aria-label="Ativar Libras" title="Libras" id="btn-libras">🤟 Libras</button>
+  </div>
+
+  <!-- WIDGET LIBRAS (VLibras) -->
+  <div vw class="enabled" id="vw-plugin" style="display:none">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+
+  <!-- HEADER / NAV -->
+  <header class="site-header" role="banner">
+    <nav class="nav-container" aria-label="Navegação principal">
+      <a href="/" class="logo" aria-label="Conectando Talentos - Página inicial">
+        <span class="logo-icon" aria-hidden="true">♿</span>
+        <span>Conectando <strong>Talentos</strong></span>
+      </a>
+      <div class="nav-links" id="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#como-funciona">Como funciona</a>
+        <span id="nav-usuario" style="display:none"></span>
+        <a href="/pages/login.html" class="btn btn-outline" id="btn-entrar">Entrar</a>
+        <a href="/pages/cadastro.html" class="btn btn-primary" id="btn-cadastrar">Cadastrar</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero-content">
+        <div class="badge-hero" aria-label="Projeto de inclusão digital">🌟 Inclusão Digital &amp; Empregabilidade</div>
+        <h1 id="hero-titulo">
+          Seu currículo.<br />
+          <span class="destaque">Seu potencial.</span><br />
+          Sem barreiras.
+        </h1>
+        <p class="hero-desc">
+          Plataforma <strong>100% gratuita e acessível</strong> para pessoas com deficiência criarem currículos profissionais e se conectarem com empresas inclusivas.
+        </p>
+        <div class="hero-actions">
+          <a href="/pages/cadastro.html?tipo=pcd" class="btn btn-primary btn-lg" aria-label="Criar meu currículo gratuitamente">
+            Criar meu currículo grátis
+          </a>
+          <a href="/pages/cadastro.html?tipo=empresa" class="btn btn-outline btn-lg" aria-label="Sou empresa e quero encontrar talentos">
+            Sou empresa
+          </a>
+        </div>
+        <p class="hero-nota" aria-label="Nota de acessibilidade">
+          ♿ Compatível com leitores de tela &nbsp;·&nbsp; 🤟 Suporte a Libras &nbsp;·&nbsp; ⌨️ Navegação por teclado
+        </p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="card-flutuante c1">
+          <span>✅ Currículo criado</span>
+          <strong>Maria S.</strong>
+        </div>
+        <div class="card-flutuante c2">
+          <span>💼 Vaga encontrada</span>
+          <strong>João P.</strong>
+        </div>
+        <div class="card-flutuante c3">
+          <span>🏢 Empresa interessada</span>
+          <strong>TechInclude</strong>
+        </div>
+        <div class="circulo-hero"></div>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="secao-sobre" id="sobre" aria-labelledby="sobre-titulo">
+      <div class="container">
+        <h2 id="sobre-titulo">Por que esta plataforma existe?</h2>
+        <p>
+          Pessoas com deficiência enfrentam barreiras concretas no mercado de trabalho — desde formulários inacessíveis até a falta de ferramentas adaptadas para criação de currículos. Este projeto nasce para mudar isso, oferecendo uma solução <strong>simples, gratuita e acessível</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="secao-passos" id="como-funciona" aria-labelledby="passos-titulo">
+      <div class="container">
+        <h2 id="passos-titulo">Como funciona</h2>
+        <div class="passos-grid" role="list">
+          <div class="passo" role="listitem">
+            <div class="passo-num" aria-hidden="true">01</div>
+            <h3>Cadastre-se</h3>
+            <p>Crie sua conta gratuitamente em menos de 1 minuto, sem burocracia.</p>
+          </div>
+          <div class="passo" role="listitem">
+            <div class="passo-num" aria-hidden="true">02</div>
+            <h3>Preencha seu currículo</h3>
+            <p>Interface acessível com campos claros, suporte a Libras e leitores de tela.</p>
+          </div>
+          <div class="passo" role="listitem">
+            <div class="passo-num" aria-hidden="true">03</div>
+            <h3>Baixe em PDF</h3>
+            <p>Gere seu currículo profissional em PDF com um clique.</p>
+          </div>
+          <div class="passo" role="listitem">
+            <div class="passo-num" aria-hidden="true">04</div>
+            <h3>Conecte-se a empresas</h3>
+            <p>Empresas inclusivas podem encontrar e contatar talentos no banco de currículos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="secao-cta" aria-labelledby="cta-titulo">
+      <div class="container cta-inner">
+        <h2 id="cta-titulo">Pronto para começar?</h2>
+        <p>Junte-se à plataforma e dê o primeiro passo rumo a novas oportunidades.</p>
+        <a href="/pages/cadastro.html?tipo=pcd" class="btn btn-primary btn-lg">Criar meu currículo agora</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <p>© 2025 Conectando Talentos · Projeto de Extensão Universitária · Rondonópolis, MT</p>
+      <p>Desenvolvido com ♥ para a inclusão digital</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <!-- VLibras -->
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+</body>
+</html>

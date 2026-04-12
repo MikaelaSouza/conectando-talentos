@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrar — Conectando Talentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="barra-acessibilidade" role="toolbar" aria-label="Ferramentas de acessibilidade">
+    <button onclick="alterarFonte(1)" aria-label="Aumentar fonte">A+</button>
+    <button onclick="alterarFonte(-1)" aria-label="Diminuir fonte">A-</button>
+    <button onclick="alternarContraste()" aria-label="Alto contraste">◐ Contraste</button>
+  </div>
+
+  <div class="pagina-auth">
+    <div class="form-auth" role="main">
+      <a href="/" style="color:var(--azul);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:24px;">
+        ← Voltar para o início
+      </a>
+      <h1>Entrar na conta</h1>
+      <p class="subtitulo">Bem-vindo(a) de volta!</p>
+
+      <div id="alerta" role="alert" aria-live="assertive" style="display:none"></div>
+
+      <div class="form-group">
+        <label for="email">E-mail <span class="obrigatorio">*</span></label>
+        <input type="email" id="email" name="email" autocomplete="email"
+               required placeholder="seu@email.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha <span class="obrigatorio">*</span></label>
+        <input type="password" id="senha" name="senha" autocomplete="current-password"
+               required placeholder="Sua senha" />
+      </div>
+
+      <button id="btn-login" class="btn btn-primary" style="width:100%;margin-top:8px;"
+              onclick="fazerLogin()">
+        Entrar
+      </button>
+
+      <p style="text-align:center;margin-top:20px;font-size:14px;color:var(--cinza);">
+        Não tem conta? <a href="/pages/cadastro.html" style="color:var(--azul-claro);font-weight:600;">Cadastrar</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Se já estiver logado, redireciona
+    const u = getUsuario();
+    if (u) window.location.href = u.tipo === 'pcd' ? '/pages/curriculo.html' : '/pages/banco.html';
+
+    // Permite login com Enter
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') fazerLogin();
+    });
+
+    async function fazerLogin() {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      const btn = document.getElementById('btn-login');
+
+      if (!email || !senha) return mostrarAlerta('Preencha e-mail e senha.', 'erro');
+
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+
+      const res = await login(email, senha);
+
+      if (res.erro) {
+        mostrarAlerta(res.erro, 'erro');
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+        return;
+      }
+
+      salvarSessao(res.token, res.usuario);
+      window.location.href = res.usuario.tipo === 'pcd' ? '/pages/curriculo.html' : '/pages/banco.html';
+    }
+
+    function mostrarAlerta(msg, tipo) {
+      const el = document.getElementById('alerta');
+      el.className = `alerta alerta-${tipo === 'erro' ? 'erro' : 'sucesso'}`;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

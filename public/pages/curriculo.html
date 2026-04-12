@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Currículo — Conectando Talentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .pagina-curriculo { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+    .pagina-curriculo h1 { font-family:'Sora',sans-serif; color:var(--azul); font-size:28px; margin-bottom:4px; }
+    .secao-form { margin-top:36px; }
+    .secao-form h2 { font-family:'Sora',sans-serif; font-size:16px; color:var(--azul); border-bottom:2px solid var(--borda); padding-bottom:8px; margin-bottom:20px; }
+    .linha-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width:600px) { .linha-2 { grid-template-columns:1fr; } }
+    .lista-dinamica { display:flex; flex-direction:column; gap:12px; margin-bottom:12px; }
+    .item-lista { display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap; }
+    .item-lista input, .item-lista select { flex:1; min-width:120px; }
+    .btn-remover { background:none; border:none; color:#c0392b; cursor:pointer; font-size:20px; padding:8px 4px; line-height:1; }
+    .barra-acoes { position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--borda); padding:14px 20px; display:flex; gap:12px; justify-content:flex-end; z-index:50; box-shadow:0 -4px 16px rgba(0,0,0,0.07); }
+    .toggle-visivel { display:flex; align-items:center; gap:10px; padding:12px 16px; border:2px solid var(--borda); border-radius:10px; cursor:pointer; font-size:14px; }
+    .toggle-visivel input { accent-color:var(--azul-claro); width:18px; height:18px; }
+  </style>
+</head>
+<body>
+  <div class="barra-acessibilidade" role="toolbar" aria-label="Ferramentas de acessibilidade">
+    <button onclick="alterarFonte(1)" aria-label="Aumentar fonte">A+</button>
+    <button onclick="alterarFonte(-1)" aria-label="Diminuir fonte">A-</button>
+    <button onclick="alternarContraste()" aria-label="Alto contraste">◐ Contraste</button>
+    <button onclick="alternarLibras()" aria-label="Libras">🤟 Libras</button>
+  </div>
+
+  <div vw class="enabled" id="vw-plugin" style="display:none">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav-container" aria-label="Navegação">
+      <a href="/" class="logo" aria-label="Conectando Talentos">
+        <span class="logo-icon" aria-hidden="true">♿</span>
+        <span>Conectando <strong>Talentos</strong></span>
+      </a>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button onclick="logout()" class="btn btn-outline" style="font-size:13px;padding:8px 16px">Sair</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="pagina-curriculo" id="main-content">
+    <h1>Meu Currículo</h1>
+    <p style="color:var(--cinza);margin-bottom:8px;">Preencha seus dados e gere um PDF profissional.</p>
+
+    <div id="alerta" role="alert" aria-live="assertive" style="display:none;margin-top:16px;"></div>
+
+    <!-- DADOS PESSOAIS -->
+    <section class="secao-form" aria-labelledby="sec-pessoais">
+      <h2 id="sec-pessoais">Dados Pessoais</h2>
+      <div class="form-group">
+        <label for="nome_completo">Nome completo <span class="obrigatorio">*</span></label>
+        <input type="text" id="nome_completo" autocomplete="name" required placeholder="Seu nome completo" />
+      </div>
+      <div class="linha-2">
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <input type="tel" id="telefone" autocomplete="tel" placeholder="(66) 99999-9999"
+                 maxlength="15" inputmode="numeric" aria-describedby="tel-dica" />
+          <span id="tel-dica" style="font-size:0.78rem;color:var(--cinza);">Formato: (XX) XXXXX-XXXX</span>
+        </div>
+        <div class="form-group">
+          <label for="cidade">Cidade</label>
+          <input type="text" id="cidade" placeholder="Ex: Rondonópolis" />
+        </div>
+      </div>
+      <div class="linha-2">
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <select id="estado">
+            <option value="">Selecione</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+            <option>GO</option><option>MA</option><option selected>MT</option><option>MS</option>
+            <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+            <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+            <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+            <option>SP</option><option>SE</option><option>TO</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="linkedin">LinkedIn</label>
+          <input type="url" id="linkedin" placeholder="https://linkedin.com/in/..." />
+        </div>
+      </div>
+    </section>
+
+    <!-- DEFICIÊNCIA -->
+    <section class="secao-form" aria-labelledby="sec-deficiencia">
+      <h2 id="sec-deficiencia">Informações de Acessibilidade</h2>
+      <div class="linha-2">
+        <div class="form-group">
+          <label for="tipo_deficiencia">Tipo de deficiência</label>
+          <select id="tipo_deficiencia">
+            <option value="">Prefiro não informar</option>
+            <option>Deficiência física</option>
+            <option>Deficiência visual</option>
+            <option>Deficiência auditiva</option>
+            <option>Deficiência intelectual</option>
+            <option>Deficiência múltipla</option>
+            <option>Transtorno do Espectro Autista</option>
+            <option>Outra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cid">CID <span style="font-weight:400;color:var(--cinza);font-size:0.82rem;">(Classificação Internacional de Doenças)</span></label>
+          <input type="text" id="cid" placeholder="Ex: F84.0, G80, H54..."
+                 maxlength="10" style="text-transform:uppercase"
+                 aria-describedby="cid-dica" />
+          <span id="cid-dica" style="font-size:0.78rem;color:var(--cinza);">Opcional. Informe o código do seu laudo médico.</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="necessidades_especiais">Necessidades de acessibilidade no trabalho</label>
+        <textarea id="necessidades_especiais" placeholder="Ex: Cadeira de rodas, intérprete de Libras, material em braile..."></textarea>
+      </div>
+    </section>
+
+    <!-- OBJETIVO -->
+    <section class="secao-form" aria-labelledby="sec-objetivo">
+      <h2 id="sec-objetivo">Objetivo Profissional</h2>
+      <div class="form-group">
+        <label for="objetivo">Objetivo</label>
+        <input type="text" id="objetivo" placeholder="Ex: Atuar como analista de dados" />
+      </div>
+      <div class="form-group">
+        <label for="sobre_mim">Sobre mim</label>
+        <textarea id="sobre_mim" placeholder="Fale um pouco sobre você, sua trajetória e suas motivações..."></textarea>
+      </div>
+    </section>
+
+    <!-- EXPERIÊNCIAS -->
+    <section class="secao-form" aria-labelledby="sec-exp">
+      <h2 id="sec-exp">Experiências Profissionais</h2>
+      <div id="lista-experiencias" class="lista-dinamica" aria-label="Lista de experiências"></div>
+      <button onclick="adicionarExperiencia()" class="btn btn-outline" style="font-size:14px;">
+        + Adicionar experiência
+      </button>
+    </section>
+
+    <!-- FORMAÇÕES -->
+    <section class="secao-form" aria-labelledby="sec-form">
+      <h2 id="sec-form">Formação Acadêmica</h2>
+      <div id="lista-formacoes" class="lista-dinamica" aria-label="Lista de formações"></div>
+      <button onclick="adicionarFormacao()" class="btn btn-outline" style="font-size:14px;">
+        + Adicionar formação
+      </button>
+    </section>
+
+    <!-- HABILIDADES -->
+    <section class="secao-form" aria-labelledby="sec-hab">
+      <h2 id="sec-hab">Habilidades</h2>
+      <div id="lista-habilidades" class="lista-dinamica" aria-label="Lista de habilidades"></div>
+      <button onclick="adicionarHabilidade()" class="btn btn-outline" style="font-size:14px;">
+        + Adicionar habilidade
+      </button>
+    </section>
+
+    <!-- IDIOMAS -->
+    <section class="secao-form" aria-labelledby="sec-idiomas">
+      <h2 id="sec-idiomas">Idiomas</h2>
+      <div id="lista-idiomas" class="lista-dinamica" aria-label="Lista de idiomas"></div>
+      <button onclick="adicionarIdioma()" class="btn btn-outline" style="font-size:14px;">
+        + Adicionar idioma
+      </button>
+    </section>
+
+    <!-- VISIBILIDADE -->
+    <section class="secao-form" aria-labelledby="sec-visib">
+      <h2 id="sec-visib">Visibilidade</h2>
+      <label class="toggle-visivel">
+        <input type="checkbox" id="visivel_empresas" checked aria-describedby="visib-desc" />
+        Permitir que empresas vejam meu currículo
+      </label>
+      <p id="visib-desc" style="font-size:0.85rem;color:var(--cinza);margin-top:8px;line-height:1.6;padding-bottom:80px;">
+        Quando ativado, seu currículo ficará disponível para empresas parceiras que buscam talentos.
+      </p>
+    </section>
+  </main>
+
+  <!-- BARRA DE AÇÕES FIXA -->
+  <div class="barra-acoes" role="toolbar" aria-label="Ações do currículo">
+    <button onclick="baixarPDF()" class="btn btn-outline" aria-label="Baixar currículo em PDF">
+      📄 Baixar PDF
+    </button>
+    <button onclick="salvar()" class="btn btn-primary" id="btn-salvar" aria-label="Salvar currículo">
+      💾 Salvar currículo
+    </button>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Redireciona se não estiver logado como PcD
+    const usuario = getUsuario();
+    if (!usuario) window.location.href = '/pages/login.html';
+    if (usuario && usuario.tipo !== 'pcd') window.location.href = '/pages/banco.html';
+
+    // ---- CARREGAR DADOS SALVOS ----
+    async function carregarCurriculo() {
+      const dados = await getMeuCurriculo();
+      if (!dados) return;
+
+      ['nome_completo','telefone','cidade','estado','linkedin','objetivo',
+       'sobre_mim','tipo_deficiencia','cid','necessidades_especiais'].forEach(campo => {
+        const el = document.getElementById(campo);
+        if (el && dados[campo]) el.value = dados[campo];
+      });
+
+      document.getElementById('visivel_empresas').checked = dados.visivel_empresas !== false;
+
+      (dados.experiencias || []).forEach(e => adicionarExperiencia(e));
+      (dados.formacoes || []).forEach(f => adicionarFormacao(f));
+      (dados.habilidades || []).forEach(h => adicionarHabilidade(h));
+      (dados.idiomas || []).forEach(i => adicionarIdioma(i));
+    }
+
+    // ---- ITENS DINÂMICOS ----
+    const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+    function gerarOpcoesAnoExp() {
+      const ano = new Date().getFullYear();
+      let opts = '<option value="">Ano</option>';
+      for (let a = ano; a >= 1970; a--) opts += `<option value="${a}">${a}</option>`;
+      return opts;
+    }
+
+    function gerarOpcoesMes(selVal = '') {
+      let opts = '<option value="">Mês</option>';
+      MESES.forEach((m, i) => {
+        const v = String(i + 1).padStart(2, '0');
+        opts += `<option value="${v}" ${v === selVal ? 'selected' : ''}>${m}</option>`;
+      });
+      return opts;
+    }
+
+    function adicionarExperiencia(dados = {}) {
+      const lista = document.getElementById('lista-experiencias');
+      const div = document.createElement('div');
+      div.className = 'card item-lista';
+      div.style.flexDirection = 'column';
+      const atual = dados.atual || false;
+
+      // Parseia inicio/fim salvos (formato YYYY-MM)
+      const [iniAno, iniMes] = (dados.inicio || '').split('-');
+      const [fimAno, fimMes] = (dados.fim || '').split('-');
+
+      const optsAno = gerarOpcoesAnoExp();
+
+      div.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
+          <div class="form-group" style="margin:0"><label>Cargo <span class="obrigatorio">*</span></label>
+            <input type="text" class="exp-cargo" value="${dados.cargo||''}" placeholder="Ex: Desenvolvedor" /></div>
+          <div class="form-group" style="margin:0"><label>Empresa</label>
+            <input type="text" class="exp-empresa" value="${dados.empresa||''}" placeholder="Nome da empresa" /></div>
+        </div>
+
+        <!-- Checkbox emprego atual -->
+        <label style="display:flex;align-items:center;gap:10px;font-weight:500;font-size:0.9rem;cursor:pointer;margin:8px 0 4px;">
+          <input type="checkbox" class="exp-atual" ${atual ? 'checked' : ''}
+            onchange="toggleAtual(this)"
+            style="width:18px;height:18px;accent-color:var(--azul-claro);flex-shrink:0;" />
+          Meu emprego atual
+        </label>
+
+        <!-- Período: Início e Fim lado a lado com selects de Mês e Ano -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;margin-top:4px;">
+          <!-- INÍCIO -->
+          <div>
+            <label style="font-size:0.9rem;font-weight:600;display:block;margin-bottom:6px;">
+              Início <span class="obrigatorio">*</span>
+            </label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <select class="exp-ini-mes" aria-label="Mês de início">
+                ${gerarOpcoesMes(iniMes||'')}
+              </select>
+              <select class="exp-ini-ano" aria-label="Ano de início">
+                ${optsAno.replace(`value="${iniAno||''}"`, `value="${iniAno||''}" selected`)}
+              </select>
+            </div>
+          </div>
+          <!-- FIM -->
+          <div class="exp-fim-group" style="${atual ? 'opacity:0.4;pointer-events:none' : ''}">
+            <label style="font-size:0.9rem;font-weight:600;display:block;margin-bottom:6px;">Fim</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <select class="exp-fim-mes" aria-label="Mês de conclusão" ${atual ? 'disabled' : ''}>
+                ${gerarOpcoesMes(fimMes||'')}
+              </select>
+              <select class="exp-fim-ano" aria-label="Ano de conclusão" ${atual ? 'disabled' : ''}>
+                ${optsAno.replace(`value="${fimAno||''}"`, `value="${fimAno||''}" selected`)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin:12px 0 0;width:100%"><label>Descrição</label>
+          <textarea class="exp-descricao" rows="2" placeholder="Descreva suas atividades...">${dados.descricao||''}</textarea></div>
+        <button class="btn-remover" onclick="this.parentElement.remove()" aria-label="Remover experiência">✕</button>
+      `;
+      lista.appendChild(div);
+    }
+
+    function toggleAtual(checkbox) {
+      const card = checkbox.closest('.card');
+      const fimGroup = card.querySelector('.exp-fim-group');
+      const fimMes = card.querySelector('.exp-fim-mes');
+      const fimAno = card.querySelector('.exp-fim-ano');
+      if (checkbox.checked) {
+        fimGroup.style.opacity = '0.4';
+        fimGroup.style.pointerEvents = 'none';
+        fimMes.disabled = true; fimMes.value = '';
+        fimAno.disabled = true; fimAno.value = '';
+      } else {
+        fimGroup.style.opacity = '1';
+        fimGroup.style.pointerEvents = 'auto';
+        fimMes.disabled = false;
+        fimAno.disabled = false;
+      }
+    }
+
+    function adicionarFormacao(dados = {}) {
+      const lista = document.getElementById('lista-formacoes');
+      const div = document.createElement('div');
+      div.className = 'card item-lista';
+      div.style.flexDirection = 'column';
+
+      const anoAtual = new Date().getFullYear();
+      let opcoesInicio = '<option value="">Selecione</option>';
+      let opcoesFim = '<option value="">Selecione</option><option value="Cursando"' + (dados.ano_fim === "Cursando" ? " selected" : "") + '>Cursando</option>';
+      for (let a = anoAtual + 6; a >= 1970; a--) {
+        const selInicio = String(a) === String(dados.ano_inicio || "") ? " selected" : "";
+        const selFim = String(a) === String(dados.ano_fim || "") ? " selected" : "";
+        opcoesInicio += `<option value="${a}"${selInicio}>${a}</option>`;
+        opcoesFim += `<option value="${a}"${selFim}>${a}</option>`;
+      }
+
+      div.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
+          <div class="form-group" style="margin:0"><label>Curso <span class="obrigatorio">*</span></label>
+            <input type="text" class="form-curso" value="${dados.curso||''}" placeholder="Análise e Desenvolvimento de Sistemas" /></div>
+          <div class="form-group" style="margin:0"><label>Instituição</label>
+            <input type="text" class="form-inst" value="${dados.instituicao||''}" placeholder="Nome da instituição" /></div>
+          <div class="form-group" style="margin:0">
+            <label>Ano de início</label>
+            <select class="form-ano-inicio" aria-label="Ano de início">${opcoesInicio}</select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Ano de conclusão</label>
+            <select class="form-ano-fim" aria-label="Ano de conclusão">${opcoesFim}</select>
+          </div>
+        </div>
+        <button class="btn-remover" onclick="this.parentElement.remove()" aria-label="Remover formação">✕</button>
+      `;
+      lista.appendChild(div);
+    }
+
+    function adicionarHabilidade(valor = '') {
+      const lista = document.getElementById('lista-habilidades');
+      const div = document.createElement('div');
+      div.className = 'item-lista';
+      div.innerHTML = `
+        <input type="text" class="hab-valor" value="${valor}" placeholder="Ex: JavaScript, Pacote Office..." style="flex:1" aria-label="Habilidade" />
+        <button class="btn-remover" onclick="this.parentElement.remove()" aria-label="Remover habilidade">✕</button>
+      `;
+      lista.appendChild(div);
+    }
+
+    function adicionarIdioma(dados = {}) {
+      const lista = document.getElementById('lista-idiomas');
+      const div = document.createElement('div');
+      div.className = 'item-lista';
+      const nivel = dados.nivel || 'Básico';
+      div.innerHTML = `
+        <input type="text" class="idioma-nome" value="${dados.idioma||''}" placeholder="Ex: Inglês" style="flex:1" aria-label="Idioma" />
+        <select class="idioma-nivel" aria-label="Nível do idioma">
+          ${['Básico','Intermediário','Avançado','Fluente','Nativo'].map(n =>
+            `<option ${n===nivel?'selected':''}>${n}</option>`).join('')}
+        </select>
+        <button class="btn-remover" onclick="this.parentElement.remove()" aria-label="Remover idioma">✕</button>
+      `;
+      lista.appendChild(div);
+    }
+
+    // ---- COLETAR DADOS ----
+    function coletarDados() {
+      const experiencias = [...document.querySelectorAll('#lista-experiencias .card')].map(el => {
+        const atual = el.querySelector('.exp-atual').checked;
+        const iniMes = el.querySelector('.exp-ini-mes').value;
+        const iniAno = el.querySelector('.exp-ini-ano').value;
+        const fimMes = el.querySelector('.exp-fim-mes').value;
+        const fimAno = el.querySelector('.exp-fim-ano').value;
+        const inicio = iniAno && iniMes ? iniAno + '-' + iniMes : '';
+        const fim    = fimAno && fimMes ? fimAno + '-' + fimMes : '';
+        const nomeMes = v => MESES[parseInt(v,10)-1] || '';
+        const inicioFmt = iniMes && iniAno ? nomeMes(iniMes) + '/' + iniAno : '';
+        const fimFmt    = atual ? 'Atual' : (fimMes && fimAno ? nomeMes(fimMes) + '/' + fimAno : '');
+        const periodo   = inicioFmt && fimFmt ? inicioFmt + ' – ' + fimFmt : (inicioFmt || fimFmt || '');
+        return {
+          cargo: el.querySelector('.exp-cargo').value,
+          empresa: el.querySelector('.exp-empresa').value,
+          inicio, fim, atual, periodo,
+          descricao: el.querySelector('.exp-descricao').value,
+        };
+      }).filter(e => e.cargo);
+
+      const formacoes = [...document.querySelectorAll('#lista-formacoes .card')].map(el => {
+        const inicio = el.querySelector('.form-ano-inicio').value;
+        const fim = el.querySelector('.form-ano-fim').value;
+        const periodo = inicio && fim ? `${inicio} – ${fim}` : (inicio || fim || '');
+        return {
+          curso: el.querySelector('.form-curso').value,
+          instituicao: el.querySelector('.form-inst').value,
+          ano_inicio: inicio,
+          ano_fim: fim,
+          periodo,
+        };
+      }).filter(f => f.curso);
+
+      const habilidades = [...document.querySelectorAll('.hab-valor')]
+        .map(el => el.value.trim()).filter(Boolean);
+
+      const idiomas = [...document.querySelectorAll('#lista-idiomas .item-lista')].map(el => ({
+        idioma: el.querySelector('.idioma-nome').value,
+        nivel: el.querySelector('.idioma-nivel').value,
+      })).filter(i => i.idioma);
+
+      return {
+        nome_completo: document.getElementById('nome_completo').value,
+        telefone: document.getElementById('telefone').value,
+        cidade: document.getElementById('cidade').value,
+        estado: document.getElementById('estado').value,
+        linkedin: document.getElementById('linkedin').value,
+        objetivo: document.getElementById('objetivo').value,
+        sobre_mim: document.getElementById('sobre_mim').value,
+        tipo_deficiencia: document.getElementById('tipo_deficiencia').value,
+        cid: document.getElementById('cid').value,
+        necessidades_especiais: document.getElementById('necessidades_especiais').value,
+        visivel_empresas: document.getElementById('visivel_empresas').checked,
+        experiencias, formacoes, habilidades, idiomas
+      };
+    }
+
+    // ---- SALVAR ----
+    async function salvar() {
+      const btn = document.getElementById('btn-salvar');
+      const alerta = document.getElementById('alerta');
+      const dados = coletarDados();
+
+      if (!dados.nome_completo) {
+        alerta.className = 'alerta alerta-erro';
+        alerta.textContent = 'O nome completo é obrigatório.';
+        alerta.style.display = 'block';
+        document.getElementById('nome_completo').focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '💾 Salvando...';
+
+      const res = await salvarCurriculo(dados);
+
+      if (res.erro) {
+        alerta.className = 'alerta alerta-erro';
+        alerta.textContent = res.erro;
+        alerta.style.display = 'block';
+      } else {
+        alerta.className = 'alerta alerta-sucesso';
+        alerta.textContent = '✅ Currículo salvo com sucesso!';
+        alerta.style.display = 'block';
+        setTimeout(() => alerta.style.display = 'none', 3000);
+      }
+
+      btn.disabled = false;
+      btn.textContent = '💾 Salvar currículo';
+    }
+
+    // ---- MÁSCARA TELEFONE ----
+    document.getElementById('telefone').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length <= 10) {
+        v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      } else {
+        v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      }
+      e.target.value = v.replace(/-$/, '');
+    });
+
+    // ---- PDF (gerado no frontend com jsPDF) ----
+    async function baixarPDF() {
+      const dados = coletarDados();
+      if (!dados.nome_completo) {
+        alert('Salve o currículo antes de baixar o PDF.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const azul = [26, 82, 118];
+      const azulClaro = [46, 134, 193];
+      const W = 210, margem = 18;
+      let y = 0;
+
+      // ---- CABEÇALHO ----
+      // Fundo azul principal
+      doc.setFillColor(...azul);
+      doc.rect(0, 0, W, 44, 'F');
+      // Faixa decorativa lateral
+      doc.setFillColor(...azulClaro);
+      doc.rect(0, 0, 5, 44, 'F');
+
+      // Nome
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(20);
+      doc.text(dados.nome_completo, margem + 2, 13);
+
+      // Objetivo
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      if (dados.objetivo) {
+        doc.setTextColor(200, 225, 245);
+        doc.text(dados.objetivo, margem + 2, 20);
+      }
+
+      // Linha de contato — email sempre incluído
+      doc.setTextColor(230, 240, 250);
+      doc.setFontSize(9);
+      const email = getUsuario()?.email || '';
+      const contatoParts = [
+        email,
+        dados.telefone,
+        dados.cidade ? dados.cidade + (dados.estado ? '/' + dados.estado : '') : '',
+        dados.linkedin
+      ].filter(Boolean);
+      // Quebra se muito longo
+      const contatoStr = contatoParts.join('   |   ');
+      const linhasContato = doc.splitTextToSize(contatoStr, W - margem * 2 - 4);
+      linhasContato.forEach((l, i) => doc.text(l, margem + 2, 27 + i * 5));
+
+      // Deficiência e CID
+      if (dados.tipo_deficiencia) {
+        const cid = dados.cid ? '  (CID: ' + dados.cid + ')' : '';
+        doc.setTextColor(180, 220, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('Def.: ' + dados.tipo_deficiencia + cid, margem + 2, 41);
+      }
+
+      y = 54;
+
+      function secao(titulo) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(...azul);
+        doc.text(titulo.toUpperCase(), margem, y);
+        doc.setDrawColor(...azul);
+        doc.line(margem, y + 1, W - margem, y + 1);
+        y += 7;
+        doc.setTextColor(30, 30, 30);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+      }
+
+      function checkPage() {
+        if (y > 270) { doc.addPage(); y = 18; }
+      }
+
+      function texto(t, negrito = false) {
+        if (!t) return;
+        doc.setFont('helvetica', negrito ? 'bold' : 'normal');
+        const linhas = doc.splitTextToSize(t, W - margem * 2);
+        linhas.forEach(l => { checkPage(); doc.text(l, margem, y); y += 5.5; });
+      }
+
+      if (dados.sobre_mim) { secao('Sobre mim'); texto(dados.sobre_mim); y += 4; }
+
+      if (dados.experiencias.length) {
+        secao('Experiência Profissional');
+        dados.experiencias.forEach(e => {
+          checkPage();
+          texto(e.cargo + (e.empresa ? ' — ' + e.empresa : '') + (e.periodo ? '  (' + e.periodo + ')' : ''), true);
+          if (e.descricao) texto(e.descricao);
+          y += 3;
+        });
+      }
+
+      if (dados.formacoes.length) {
+        secao('Formação Acadêmica');
+        dados.formacoes.forEach(f => {
+          checkPage();
+          texto(f.curso + (f.instituicao ? ' — ' + f.instituicao : '') + (f.periodo ? '  (' + f.periodo + ')' : ''), true);
+          y += 2;
+        });
+        y += 2;
+      }
+
+      if (dados.habilidades.length) {
+        secao('Habilidades');
+        texto(dados.habilidades.join('   •   '));
+        y += 4;
+      }
+
+      if (dados.idiomas.length) {
+        secao('Idiomas');
+        texto(dados.idiomas.map(i => i.idioma + ' (' + i.nivel + ')').join('   •   '));
+        y += 4;
+      }
+
+      if (dados.necessidades_especiais) {
+        secao('Necessidades de Acessibilidade');
+        texto(dados.necessidades_especiais);
+      }
+
+      const nomeArq = 'curriculo-' + dados.nome_completo.replace(/\s+/g, '_') + '.pdf';
+      doc.save(nomeArq);
+    }
+
+    // INIT
+    carregarPreferencias();
+    carregarCurriculo();
+  </script>
+  <!-- jsPDF — geração de PDF direto no navegador -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+</body>
+</html>

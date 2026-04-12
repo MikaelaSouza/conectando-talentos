@@ -1,0 +1,18 @@
+# Configuração de deploy automático no Render
+# Coloque este arquivo na raiz do repositório
+
+services:
+  - type: web
+    name: conectando-talentos
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 3000
