@@ -64,7 +64,7 @@
       <div class="linha-2">
         <div class="form-group">
           <label for="telefone">Telefone</label>
-          <input type="tel" id="telefone" autocomplete="tel" placeholder="(66) 99999-9999"
+          <input type="tel" id="telefone" autocomplete="tel" placeholder="(65) 99999-9999"
                  maxlength="15" inputmode="numeric" aria-describedby="tel-dica" />
           <span id="tel-dica" style="font-size:0.78rem;color:var(--cinza);">Formato: (XX) XXXXX-XXXX</span>
         </div>
@@ -130,7 +130,7 @@
       <h2 id="sec-objetivo">Objetivo Profissional</h2>
       <div class="form-group">
         <label for="objetivo">Objetivo</label>
-        <input type="text" id="objetivo" placeholder="Ex: Atuar como analista de dados" />
+        <input type="text" id="objetivo" placeholder="Ex: Atuar como analista de dados em empresa inclusiva" />
       </div>
       <div class="form-group">
         <label for="sobre_mim">Sobre mim</label>
@@ -159,10 +159,36 @@
     <!-- HABILIDADES -->
     <section class="secao-form" aria-labelledby="sec-hab">
       <h2 id="sec-hab">Habilidades</h2>
-      <div id="lista-habilidades" class="lista-dinamica" aria-label="Lista de habilidades"></div>
-      <button onclick="adicionarHabilidade()" class="btn btn-outline" style="font-size:14px;">
-        + Adicionar habilidade
-      </button>
+      <p style="font-size:0.88rem;color:var(--cinza);margin-bottom:14px;">
+        Selecione as habilidades abaixo ou adicione outras no campo personalizado.
+      </p>
+
+      <!-- Grade de habilidades comuns -->
+      <div id="grade-habilidades" role="group" aria-label="Habilidades comuns para selecionar"
+           style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
+      </div>
+
+      <!-- Campo personalizado -->
+      <div class="form-group" style="margin-bottom:12px;">
+        <label for="hab-custom">Outra habilidade</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="text" id="hab-custom" placeholder="Digite e pressione Enter ou clique em +"
+                 aria-describedby="hab-custom-dica"
+                 style="flex:1;margin:0;"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarHabCustom();}" />
+          <button onclick="adicionarHabCustom()" class="btn btn-outline"
+                  style="height:46px;width:46px;padding:0;font-size:1.3rem;flex-shrink:0;"
+                  aria-label="Adicionar habilidade personalizada">+</button>
+        </div>
+        <span id="hab-custom-dica" style="font-size:0.78rem;color:var(--cinza);">
+          Pressione Enter ou clique em + para adicionar.
+        </span>
+      </div>
+
+      <!-- Habilidades selecionadas -->
+      <div id="habs-selecionadas" role="list" aria-label="Habilidades selecionadas"
+           style="display:flex;flex-wrap:wrap;gap:8px;min-height:20px;">
+      </div>
     </section>
 
     <!-- IDIOMAS -->
@@ -220,7 +246,7 @@
 
       (dados.experiencias || []).forEach(e => adicionarExperiencia(e));
       (dados.formacoes || []).forEach(f => adicionarFormacao(f));
-      (dados.habilidades || []).forEach(h => adicionarHabilidade(h));
+      inicializarHabilidades(dados.habilidades || []);
       (dados.idiomas || []).forEach(i => adicionarIdioma(i));
     }
 
@@ -230,7 +256,7 @@
     function gerarOpcoesAnoExp() {
       const ano = new Date().getFullYear();
       let opts = '<option value="">Ano</option>';
-      for (let a = ano; a >= 1970; a--) opts += `<option value="${a}">${a}</option>`;
+      for (let a = ano + 2; a >= 1970; a--) opts += `<option value="${a}">${a}</option>`;
       return opts;
     }
 
@@ -346,7 +372,7 @@
       div.innerHTML = `
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
           <div class="form-group" style="margin:0"><label>Curso <span class="obrigatorio">*</span></label>
-            <input type="text" class="form-curso" value="${dados.curso||''}" placeholder="Análise e Desenvolvimento de Sistemas" /></div>
+            <input type="text" class="form-curso" value="${dados.curso||''}" placeholder="Ex: ADS" /></div>
           <div class="form-group" style="margin:0"><label>Instituição</label>
             <input type="text" class="form-inst" value="${dados.instituicao||''}" placeholder="Nome da instituição" /></div>
           <div class="form-group" style="margin:0">
@@ -363,15 +389,89 @@
       lista.appendChild(div);
     }
 
+    // ---- HABILIDADES ----
+    const HABS_COMUNS = [
+      'Pacote Office','Word','Excel','PowerPoint','Google Workspace',
+      'Internet','E-mail','Redes Sociais','Atendimento ao cliente',
+      'Trabalho em equipe','Comunicação','Organização','Proatividade',
+      'Liderança','Vendas','Logística','Administrativo','Financeiro',
+      'JavaScript','Python','HTML/CSS','Banco de Dados','Node.js',
+      'Libras','Braile','Tecnologia Assistiva'
+    ];
+
+    let habsSelecionadas = new Set();
+
+    function inicializarHabilidades(habsSalvas = []) {
+      habsSelecionadas = new Set(habsSalvas);
+      renderizarGrade();
+      renderizarSelecionadas();
+    }
+
+    function renderizarGrade() {
+      const grade = document.getElementById('grade-habilidades');
+      grade.innerHTML = HABS_COMUNS.map(h => {
+        const sel = habsSelecionadas.has(h);
+        return `<button type="button"
+          onclick="toggleHab('${h}')"
+          aria-pressed="${sel}"
+          aria-label="${sel ? 'Remover' : 'Adicionar'} habilidade ${h}"
+          style="padding:8px 14px;border-radius:20px;font-size:0.85rem;font-family:inherit;cursor:pointer;
+                 border:2px solid ${sel ? 'var(--azul-claro)' : 'var(--borda)'};
+                 background:${sel ? 'var(--azul-claro)' : 'transparent'};
+                 color:${sel ? '#fff' : 'var(--texto)'};
+                 transition:all 0.15s;"
+        >${h}</button>`;
+      }).join('');
+    }
+
+    function renderizarSelecionadas() {
+      const cont = document.getElementById('habs-selecionadas');
+      if (habsSelecionadas.size === 0) {
+        cont.innerHTML = '<span style="font-size:0.85rem;color:var(--cinza)">Nenhuma habilidade selecionada ainda.</span>';
+        return;
+      }
+      cont.innerHTML = [...habsSelecionadas].map(h => `
+        <span role="listitem" style="display:inline-flex;align-items:center;gap:6px;
+              background:#d6eaf8;color:#1a5276;
+              padding:5px 12px;border-radius:20px;font-size:0.85rem;font-weight:600;">
+          ${h}
+          <button type="button" onclick="removerHab('${h}')"
+            aria-label="Remover habilidade ${h}"
+            style="background:none;border:none;cursor:pointer;color:#1a5276;
+                   font-size:16px;line-height:1;padding:0 0 0 2px;">✕</button>
+        </span>`).join('');
+    }
+
+    function toggleHab(h) {
+      if (habsSelecionadas.has(h)) {
+        habsSelecionadas.delete(h);
+      } else {
+        habsSelecionadas.add(h);
+      }
+      renderizarGrade();
+      renderizarSelecionadas();
+    }
+
+    function removerHab(h) {
+      habsSelecionadas.delete(h);
+      renderizarGrade();
+      renderizarSelecionadas();
+    }
+
+    function adicionarHabCustom() {
+      const input = document.getElementById('hab-custom');
+      const val = input.value.trim();
+      if (!val) return;
+      habsSelecionadas.add(val);
+      input.value = '';
+      renderizarGrade();
+      renderizarSelecionadas();
+      input.focus();
+    }
+
+    // mantida por compatibilidade com carregarCurriculo
     function adicionarHabilidade(valor = '') {
-      const lista = document.getElementById('lista-habilidades');
-      const div = document.createElement('div');
-      div.className = 'item-lista';
-      div.innerHTML = `
-        <input type="text" class="hab-valor" value="${valor}" placeholder="Ex: JavaScript, Pacote Office..." style="flex:1" aria-label="Habilidade" />
-        <button class="btn-remover" onclick="this.parentElement.remove()" aria-label="Remover habilidade">✕</button>
-      `;
-      lista.appendChild(div);
+      if (valor) habsSelecionadas.add(valor);
     }
 
     function adicionarIdioma(dados = {}) {
@@ -425,8 +525,7 @@
         };
       }).filter(f => f.curso);
 
-      const habilidades = [...document.querySelectorAll('.hab-valor')]
-        .map(el => el.value.trim()).filter(Boolean);
+      const habilidades = [...habsSelecionadas].filter(Boolean);
 
       const idiomas = [...document.querySelectorAll('#lista-idiomas .item-lista')].map(el => ({
         idioma: el.querySelector('.idioma-nome').value,
@@ -626,6 +725,7 @@
 
     // INIT
     carregarPreferencias();
+    inicializarHabilidades([]);
     carregarCurriculo();
   </script>
   <!-- jsPDF — geração de PDF direto no navegador -->
