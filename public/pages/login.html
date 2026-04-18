@@ -64,8 +64,34 @@
       const email = document.getElementById('email').value.trim();
       const senha = document.getElementById('senha').value;
       const btn = document.getElementById('btn-login');
+      const emailEl = document.getElementById('email');
+      const senhaEl = document.getElementById('senha');
 
-      if (!email || !senha) return mostrarAlerta('Preencha e-mail e senha.', 'erro');
+      // Reseta estados
+      emailEl.removeAttribute('aria-invalid');
+      senhaEl.removeAttribute('aria-invalid');
+
+      // Validações com feedback nos campos
+      let valido = true;
+      if (!email) {
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        valido = false;
+      }
+      if (!senha) {
+        senhaEl.setAttribute('aria-invalid', 'true');
+        if (valido) senhaEl.focus();
+        valido = false;
+      }
+      if (!valido) return mostrarAlerta('Preencha e-mail e senha.', 'erro');
+
+      // Valida formato do e-mail
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        return mostrarAlerta('Informe um e-mail válido.', 'erro');
+      }
 
       btn.disabled = true;
       btn.textContent = 'Entrando...';

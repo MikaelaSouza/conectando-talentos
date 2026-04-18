@@ -158,11 +158,49 @@
       // Validações
       const cpf = document.getElementById('cpf').value.trim();
       const cnpj = document.getElementById('cnpj').value.trim();
+      const emailEl = document.getElementById('email');
+      const senhaEl = document.getElementById('senha');
+      const cnpjEl = document.getElementById('cnpj');
 
+      // Reseta estados
+      emailEl.removeAttribute('aria-invalid');
+      senhaEl.removeAttribute('aria-invalid');
+      cnpjEl.removeAttribute('aria-invalid');
+
+      // Valida tipo
       if (!tipo) return mostrarAlerta('Selecione se você é PcD ou Empresa.', 'erro');
-      if (!email) return mostrarAlerta('Informe seu e-mail.', 'erro');
-      if (senha.length < 6) return mostrarAlerta('A senha precisa ter ao menos 6 caracteres.', 'erro');
-      if (tipo === 'empresa' && !cnpj) return mostrarAlerta('CNPJ é obrigatório para empresas.', 'erro');
+
+      // Valida e-mail
+      if (!email) {
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        return mostrarAlerta('Informe seu e-mail.', 'erro');
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        return mostrarAlerta('Informe um e-mail válido (ex: nome@email.com).', 'erro');
+      }
+
+      // Valida CNPJ para empresas
+      if (tipo === 'empresa' && !cnpj) {
+        cnpjEl.setAttribute('aria-invalid', 'true');
+        cnpjEl.focus();
+        return mostrarAlerta('CNPJ é obrigatório para empresas.', 'erro');
+      }
+      if (tipo === 'empresa' && cnpj.replace(/\D/g,'').length !== 14) {
+        cnpjEl.setAttribute('aria-invalid', 'true');
+        cnpjEl.focus();
+        return mostrarAlerta('CNPJ inválido. Informe os 14 dígitos.', 'erro');
+      }
+
+      // Valida senha
+      if (senha.length < 6) {
+        senhaEl.setAttribute('aria-invalid', 'true');
+        senhaEl.focus();
+        return mostrarAlerta('A senha precisa ter ao menos 6 caracteres.', 'erro');
+      }
 
       btn.disabled = true;
       btn.textContent = 'Criando conta...';
